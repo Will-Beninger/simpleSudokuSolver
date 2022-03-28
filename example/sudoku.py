@@ -3,7 +3,7 @@ import argparse
 
 from tkinter import Tk, Canvas, Frame, Button, BOTH, TOP, BOTTOM
 
-BOARDS = ['debug', 'n00b', 'l33t', 'error']  # Available sudoku boards
+BOARDS = ['debug', 'n00b', 'l33t', 'error','bottom_left']  # Available sudoku boards
 MARGIN = 20  # Pixels around the board
 SIDE = 50  # Width of every board cell.
 WIDTH = HEIGHT = MARGIN * 2 + SIDE * 9  # Width and height of the whole board
@@ -54,6 +54,10 @@ class SudokuUI(Frame):
                              width=WIDTH,
                              height=HEIGHT)
         self.canvas.pack(fill=BOTH, side=TOP)
+        solve_button = Button(self,
+                              text="Solve Puzzle",
+                              command=self.__solve_puzzle)
+        solve_button.pack(fill=BOTH, side=BOTTOM)
         clear_button = Button(self,
                               text="Clear answers",
                               command=self.__clear_answers)
@@ -161,6 +165,9 @@ class SudokuUI(Frame):
         self.game.start()
         self.canvas.delete("victory")
         self.__draw_puzzle()
+        
+    def __solve_puzzle(self):
+        pass
 
 
 class SudokuBoard(object):
@@ -253,5 +260,5 @@ if __name__ == '__main__':
 
         root = Tk()
         SudokuUI(root, game)
-        root.geometry("%dx%d" % (WIDTH, HEIGHT + 40))
+        root.geometry("%dx%d" % (WIDTH, HEIGHT + 80))
         root.mainloop()
