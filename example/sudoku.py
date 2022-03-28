@@ -157,13 +157,16 @@ class SudokuUI(Frame):
     def __key_pressed(self, event):
         if self.game.game_over:
             return
-        if self.row >= 0 and self.col >= 0 and event.char in "1234567890":
-            self.game.puzzle[self.row][self.col] = int(event.char)
-            #self.col, self.row = -1, -1 #Unselect the grid
+        #print(event) #DEBUG
+        if self.row >= 0 and self.col >= 0:
+            if event.keycode >=48 and event.keycode <= 57: #"1234567890"
+                self.game.puzzle[self.row][self.col] = int(event.char)
+                if self.game.check_win():
+                    self.__draw_victory()
+            if event.keycode == 46 or event.keycode == 8:
+                self.game.puzzle[self.row][self.col] = 0
             self.__draw_puzzle()
             self.__draw_cursor()
-            if self.game.check_win():
-                self.__draw_victory()
     
     def _left_key_pressed(self, event):
         if self.game.game_over:
