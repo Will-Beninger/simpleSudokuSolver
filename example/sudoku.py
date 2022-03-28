@@ -54,6 +54,10 @@ class SudokuUI(Frame):
                              width=WIDTH,
                              height=HEIGHT)
         self.canvas.pack(fill=BOTH, side=TOP)
+        check_button = Button(self,
+                              text="Check Answers",
+                              command=self.__check_answers)
+        check_button.pack(fill=BOTH, side=BOTTOM)
         solve_button = Button(self,
                               text="Solve Puzzle",
                               command=self.__solve_puzzle)
@@ -115,7 +119,7 @@ class SudokuUI(Frame):
             y1 = MARGIN + (self.row + 1) * SIDE - 1
             self.canvas.create_rectangle(
                 x0, y0, x1, y1,
-                outline="red", tags="cursor"
+                outline="green", tags="cursor"
             )
 
     def __draw_victory(self):
@@ -207,7 +211,9 @@ class SudokuUI(Frame):
         
     def __solve_puzzle(self):
         pass
-
+    
+    def __check_answers(self):
+        pass
 
 class SudokuBoard(object):
     """
