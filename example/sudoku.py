@@ -68,6 +68,10 @@ class SudokuUI(Frame):
 
         self.canvas.bind("<Button-1>", self.__cell_clicked)
         self.canvas.bind("<Key>", self.__key_pressed)
+        self.canvas.bind("<Left>",self._left_key_pressed)
+        self.canvas.bind("<Right>",self._right_key_pressed)
+        self.canvas.bind("<Down>",self._down_key_pressed)
+        self.canvas.bind("<Up>",self._up_key_pressed)
 
     def __draw_grid(self):
         """
@@ -155,11 +159,43 @@ class SudokuUI(Frame):
             return
         if self.row >= 0 and self.col >= 0 and event.char in "1234567890":
             self.game.puzzle[self.row][self.col] = int(event.char)
-            self.col, self.row = -1, -1
+            #self.col, self.row = -1, -1 #Unselect the grid
             self.__draw_puzzle()
             self.__draw_cursor()
             if self.game.check_win():
                 self.__draw_victory()
+    
+    def _left_key_pressed(self, event):
+        if self.game.game_over:
+            return
+        if (self.row >= 0 and self.col >= 1):
+            self.col=self.col-1
+            self.__draw_puzzle()
+            self.__draw_cursor()
+
+    def _right_key_pressed(self, event):
+        if self.game.game_over:
+            return
+        if (self.row >= 0 and self.col >= 0 and self.col < 8):
+            self.col=self.col+1
+            self.__draw_puzzle()
+            self.__draw_cursor()
+
+    def _down_key_pressed(self, event):
+        if self.game.game_over:
+            return
+        if (self.row >= 0 and self.col >= 0 and self.row < 8):
+            self.row=self.row+1
+            self.__draw_puzzle()
+            self.__draw_cursor()
+
+    def _up_key_pressed(self, event):
+        if self.game.game_over:
+            return
+        if (self.row >= 1 and self.col >= 0):
+            self.row=self.row-1
+            self.__draw_puzzle()
+            self.__draw_cursor()
 
     def __clear_answers(self):
         self.game.start()
