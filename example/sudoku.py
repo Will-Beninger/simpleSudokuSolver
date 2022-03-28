@@ -147,7 +147,7 @@ class SudokuUI(Frame):
             # if cell was selected already - deselect it
             if (row, col) == (self.row, self.col):
                 self.row, self.col = -1, -1
-            elif self.game.start_puzzle[row][col] == 0:
+            else:
                 self.row, self.col = row, col
         else:
             self.row, self.col = -1, -1
@@ -158,7 +158,7 @@ class SudokuUI(Frame):
         if self.game.game_over:
             return
         #print(event) #DEBUG
-        if self.row >= 0 and self.col >= 0:
+        if self.row >= 0 and self.col >= 0 and self.game.start_puzzle[self.row][self.col] ==0:
             if event.keycode >=48 and event.keycode <= 57: #"1234567890"
                 self.game.puzzle[self.row][self.col] = int(event.char)
                 if self.game.check_win():
