@@ -1,9 +1,9 @@
 #based on http://newcoder.io/gui/
 import argparse
+from tkinter import Tk, Label, Canvas, Frame, Button, BOTH, TOP, BOTTOM
+from os import getcwd, path, listdir
 
-from tkinter import Tk, Canvas, Frame, Button, BOTH, TOP, BOTTOM
-
-BOARDS = ['debug', 'n00b', 'l33t', 'error','bottom_left']  # Available sudoku boards
+BOARDS = []  # Available sudoku boards
 MARGIN = 20  # Pixels around the board
 SIDE = 50  # Width of every board cell.
 WIDTH = HEIGHT = MARGIN * 2 + SIDE * 9  # Width and height of the whole board
@@ -50,6 +50,10 @@ class SudokuUI(Frame):
     def __initUI(self):
         self.parent.title("Sudoku")
         self.pack(fill=BOTH)
+        header_label = Label(self,
+                             text="Welcome to Sudoku!",
+                             font="Arial 18 bold")
+        header_label.pack(fill=BOTH, side=TOP)
         self.canvas = Canvas(self,
                              width=WIDTH,
                              height=HEIGHT)
@@ -297,13 +301,16 @@ class SudokuGame(object):
 
 
 if __name__ == '__main__':
+    BOARDS=listdir(path.join(getcwd(),"gameboards")) 
+    for i in range(0,len(BOARDS)):
+        BOARDS[i] = BOARDS[i].replace(".sudoku","")
     board_name = parse_arguments()
 
-    with open('%s.sudoku' % board_name, 'r') as boards_file:
+    with open(path.join(getcwd(),"gameboards",'%s.sudoku' % board_name), 'r') as boards_file:
         game = SudokuGame(boards_file)
         game.start()
 
         root = Tk()
         SudokuUI(root, game)
-        root.geometry("%dx%d" % (WIDTH, HEIGHT + 80))
+        root.geometry("%dx%d" % (WIDTH, HEIGHT + 120))
         root.mainloop()
