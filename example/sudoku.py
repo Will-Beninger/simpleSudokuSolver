@@ -214,7 +214,8 @@ class SudokuUI(Frame):
         self.__draw_puzzle()
         
     def __solve_puzzle(self):
-        pass
+        self.game.solve_step()
+        self.__draw_puzzle()
     
     def __check_answers(self):
         pass
@@ -298,11 +299,53 @@ class SudokuGame(object):
                 for c in range(column * 3, (column + 1) * 3)
             ]
         )
+        
+    def solve_step(self):
+        self.__solve_single_candidates()
+    
+    def __solve_single_candidates(self):
+        potentials=[1,2,3,4,5,6,7,8,9]
+        #Single Candidates
+        for r in range(9):
+            for c in range(9):
+                if self.puzzle[r][c]!=0:
+                    continue
+                p=potentials.copy()
+                #SameRow
+                for a in range(9):
+                    if a==c:
+                        continue
+                    #print('%d,%d:%d' % (r,a,self.puzzle[r][a])) #DEBUG
+                    if self.puzzle[r][a]!=0:
+                        try:
+                            p.remove(self.puzzle[r][a])
+                        except:
+                            continue
+                #SameCol
+                for a in range(9):
+                    if a==r:
+                        continue
+                    if self.puzzle[a][c]!=0:
+                        try:
+                            p.remove(self.puzzle[a][c])
+                        except:
+                            continue
+                #SameBox
+                rbox=int(r/3)
+                cbox=int(c/3)
+                for a in range(rbox * 3, rbox * 3 + 3):
+                    for b in range(cbox * 3, cbox * 3 +3):
+                        try:
+                            p.remove(self.puzzle[a][b])
+                        except:
+                            continue
+                if len(p)==1:
+                    self.puzzle[r][c]=p[0]
 
 
 if __name__ == '__main__':
     BOARDS=listdir(path.join(getcwd(),"gameboards")) 
-    for i in range(0,len(BOARDS)):
+    for i in range(len(BOARDS)):
         BOARDS[i] = BOARDS[i].replace(".sudoku","")
     board_name = parse_arguments()
 
