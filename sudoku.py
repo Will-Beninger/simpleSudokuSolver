@@ -302,6 +302,24 @@ class SudokuGame(object):
         
     def solve_step(self):
         self.__solve_single_candidates()
+        self.__solve_scan_two_directions()
+        
+    def __solve_scan_two_directions(self):
+        #rbox=int(r/3)
+        #cbox=int(c/3)
+        for rbox in range(3):
+            for cbox in range(3):
+                empty=[]
+                for a in range(rbox * 3, rbox * 3 + 3):
+                    for b in range(cbox * 3, cbox * 3 +3):
+                        if self.puzzle[a][b]==0:
+                            empty.append([a,b])
+                print(empty)
+                for n in range(1,9):
+                    for r in range(9):
+                        for c in range(9):
+                            #Check 
+                            continue
     
     def __solve_single_candidates(self):
         potentials=[1,2,3,4,5,6,7,8,9]

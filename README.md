@@ -1,1 +1,1 @@
-# simpleSudokuSolver
+Example from http://newcoder.io/gui/
