@@ -58,10 +58,10 @@ class SudokuUI(Frame):
                              width=WIDTH,
                              height=HEIGHT)
         self.canvas.pack(fill=BOTH, side=TOP)
-        check_button = Button(self,
-                              text="Check Answers",
-                              command=self.__check_answers)
-        check_button.pack(fill=BOTH, side=BOTTOM)
+        save_button = Button(self,
+                              text="Save Puzzle",
+                              command=self.__save_puzzle)
+        solve_button.pack(fill=BOTH, side=BOTTOM)
         solve_button = Button(self,
                               text="Solve Puzzle",
                               command=self.__solve_puzzle)
@@ -216,8 +216,8 @@ class SudokuUI(Frame):
     def __solve_puzzle(self):
         self.game.solve_step()
         self.__draw_puzzle()
-    
-    def __check_answers(self):
+        
+    def __save_puzzle(self):
         pass
 
 class SudokuBoard(object):
@@ -301,28 +301,59 @@ class SudokuGame(object):
         )
         
     def solve_step(self):
-        self.__solve_single_candidates()
-        self.__solve_scan_two_directions()
+        while True:
+            changes=self.__solve_single_candidates()
+            changes=changes+self.__solve_scan_two_directions()
+            if changes==0:
+                break
         
     def __solve_scan_two_directions(self):
-        #rbox=int(r/3)
-        #cbox=int(c/3)
+        changes=0
         for rbox in range(3):
             for cbox in range(3):
-                empty=[]
+                alreadyInSquare=set(
+                    [
+                        self.puzzle[r][c]
+                        for r in range(rbox * 3, (rbox + 1) * 3)
+                        for c in range(cbox * 3, (cbox + 1) * 3)
+                    ])
+                if 0 not in alreadyInSquare: #Skip if no empty in square
+                    continue
+                alreadyInSquare.remove(0)
+                notInSquare=set(range(1,10))-alreadyInSquare
+                emptycols,emptyrows,empty=[],[],[]
+                numEmpty=0
                 for a in range(rbox * 3, rbox * 3 + 3):
                     for b in range(cbox * 3, cbox * 3 +3):
                         if self.puzzle[a][b]==0:
-                            empty.append([a,b])
-                print(empty)
-                for n in range(1,9):
-                    for r in range(9):
-                        for c in range(9):
-                            #Check 
-                            continue
+                            empty.append('%d,%d' % (a,b))
+                            emptyrows.append(a)
+                            emptycols.append(b)
+                            numEmpty=numEmpty+1
+                emptycols=set(emptycols)
+                emptyrows=set(emptyrows)
+                if numEmpty==1: #Solve only 1 missing
+                    coords=empty[0].split(',')
+                    self.puzzle[int(coords[0])][int(coords[1])]=notInSquare.pop()
+                    changes=changes+1
+                    continue
+                for i in notInSquare:
+                    potentials=empty.copy()
+                    for r in emptyrows:
+                        if i in self.puzzle[r]:
+                            potentials = [x for x in potentials if not x.startswith('%d' % r)]
+                    for c in emptycols:
+                        if i in [x[c] for x in self.puzzle]:
+                            potentials = [x for x in potentials if not x.endswith(',%d' % c)]
+                    if len(potentials)==1:
+                        coords=potentials[0].split(',')
+                        self.puzzle[int(coords[0])][int(coords[1])]=i
+                        changes=changes+1
+        return changes
     
     def __solve_single_candidates(self):
         potentials=[1,2,3,4,5,6,7,8,9]
+        changes=0
         #Single Candidates
         for r in range(9):
             for c in range(9):
@@ -358,7 +389,9 @@ class SudokuGame(object):
                         except:
                             continue
                 if len(p)==1:
+                    changes=changes+1
                     self.puzzle[r][c]=p[0]
+        return changes
 
 
 if __name__ == '__main__':
