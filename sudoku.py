@@ -1,12 +1,13 @@
 #based on http://newcoder.io/gui/
 import argparse
-from tkinter import Tk, Label, Canvas, Frame, Button, BOTH, TOP, BOTTOM
+from tkinter import Tk, Label, Canvas, Frame, Button, BOTH, TOP, BOTTOM, filedialog
 from os import getcwd, path, listdir
 
 BOARDS = []  # Available sudoku boards
 MARGIN = 20  # Pixels around the board
 SIDE = 50  # Width of every board cell.
 WIDTH = HEIGHT = MARGIN * 2 + SIDE * 9  # Width and height of the whole board
+FILES = [('Sudoku Files', '*.sudoku')]
 
 
 class SudokuError(Exception):
@@ -61,7 +62,7 @@ class SudokuUI(Frame):
         save_button = Button(self,
                               text="Save Puzzle",
                               command=self.__save_puzzle)
-        solve_button.pack(fill=BOTH, side=BOTTOM)
+        save_button.pack(fill=BOTH, side=BOTTOM)
         solve_button = Button(self,
                               text="Solve Puzzle",
                               command=self.__solve_puzzle)
@@ -218,7 +219,11 @@ class SudokuUI(Frame):
         self.__draw_puzzle()
         
     def __save_puzzle(self):
-        pass
+        file = filedialog.asksaveasfile(filetypes=FILES, defaultextension=FILES)
+        text=''
+        for i in self.game.puzzle:
+            text=text+''.join(map(str,i))+'\n'
+        file.write(text)
 
 class SudokuBoard(object):
     """
