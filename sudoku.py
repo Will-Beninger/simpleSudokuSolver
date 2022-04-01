@@ -309,6 +309,7 @@ class SudokuGame(object):
         while True:
             changes=self.__solve_single_candidates()
             changes=changes+self.__solve_scan_two_directions()
+            changes=changes+self.__solve_missing_rowcols()
             if changes==0:
                 break
         
@@ -397,6 +398,9 @@ class SudokuGame(object):
                     changes=changes+1
                     self.puzzle[r][c]=p[0]
         return changes
+        
+    def __solve_missing_rowcols(self):
+        return 0
 
 
 if __name__ == '__main__':
