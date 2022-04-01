@@ -328,17 +328,15 @@ class SudokuGame(object):
                 alreadyInSquare.remove(0)
                 notInSquare=set(range(1,10))-alreadyInSquare
                 emptycols,emptyrows,empty=[],[],[]
-                numEmpty=0
                 for a in range(rbox * 3, rbox * 3 + 3):
                     for b in range(cbox * 3, cbox * 3 +3):
                         if self.puzzle[a][b]==0:
                             empty.append('%d,%d' % (a,b))
                             emptyrows.append(a)
                             emptycols.append(b)
-                            numEmpty=numEmpty+1
                 emptycols=set(emptycols)
                 emptyrows=set(emptyrows)
-                if numEmpty==1: #Solve only 1 missing
+                if len(empty)==1: #Solve only 1 missing
                     coords=empty[0].split(',')
                     self.puzzle[int(coords[0])][int(coords[1])]=notInSquare.pop()
                     changes=changes+1
@@ -400,7 +398,33 @@ class SudokuGame(object):
         return changes
         
     def __solve_missing_rowcols(self):
-        return 0
+        changes=0
+        for r in range(9):
+            if 0 in self.puzzle[r]:
+                missing=set(range(0,10))-set(self.puzzle[r])
+                for c in range(9):
+                    if self.puzzle[r][c]==0:
+                        options=missing-set([x[c] for x in self.puzzle])
+                        print("%d,%d" % (r,c))
+                        print(options)
+                        if len(options)==1:
+                            self.puzzle[r][c]=options.pop()
+                            changes=changes+1
+                            break
+        for c in range(9):
+            colVals=[x[c] for x in self.puzzle]
+            if 0 in colVals:
+                missing=set(range(0,10))-set(colVals)
+                for r in range(9):
+                    if self.puzzle[r][c]==0:
+                        options=missing-set(self.puzzle[r])
+                        print("%d,%d" % (r,c))
+                        print(options)
+                        if len(options)==1:
+                            self.puzzle[r][c]=options.pop()
+                            changes=changes+1
+                            break
+        return changes
 
 
 if __name__ == '__main__':
