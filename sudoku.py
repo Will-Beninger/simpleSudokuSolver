@@ -168,11 +168,11 @@ class SudokuUI(Frame):
             return
         #print(event) #DEBUG
         if self.row >= 0 and self.col >= 0 and self.game.start_puzzle[self.row][self.col] ==0:
-            if event.keycode >=48 and event.keycode <= 57: #"1234567890"
+            if event.char.isnumeric() and (int(event.char) >=0 and int(event.char) <= 9): #"1234567890"
                 self.game.puzzle[self.row][self.col] = int(event.char)
                 if self.game.check_win():
                     self.__draw_victory()
-            if event.keycode == 46 or event.keycode == 8:
+            if event.keysym=="BackSpace" or event.keysym=="Delete" or event.keysym=="KP_Delete": #event.keycode == 46 or event.keycode == 8: #Windows way
                 self.game.puzzle[self.row][self.col] = 0
             self.__draw_puzzle()
             self.__draw_cursor()
