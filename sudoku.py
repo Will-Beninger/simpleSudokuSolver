@@ -289,6 +289,9 @@ class SudokuGame(object):
         self.game_over = True
         return True
 
+    def get(self, coords):
+        return self.puzzle[coords.split(",")[0]][coords.split(",")[1]]
+
     def __check_block(self, block):
         return set(block) == set(range(1, 10))
 
@@ -400,15 +403,23 @@ class SudokuGame(object):
                     changes=changes+1
                     self.puzzle[r][c]=p[0]
         return changes
-        
+
     def __solve_missing_rowcols(self):
         changes=0
         for r in range(9):
             if 0 in self.puzzle[r]:
-                missing=set(range(0,10))-set(self.puzzle[r])
+                missing=set(range(0,10))-set(self.puzzle[r]) #remove items in row
                 for c in range(9):
                     if self.puzzle[r][c]==0:
-                        options=missing-set([x[c] for x in self.puzzle])
+                        options=missing-set([x[c] for x in self.puzzle]) #remove items in col
+                        rbox=int(r/3)
+                        cbox=int(c/3)
+                        for a in range(rbox * 3, rbox * 3 + 3):
+                            for b in range(cbox * 3, cbox * 3 +3):
+                                try:
+                                    options.remove(self.puzzle[a][b])
+                                except:
+                                    continue
                         #print("%d,%d" % (r,c))
                         #print(options)
                         if len(options)==1:
@@ -422,6 +433,14 @@ class SudokuGame(object):
                 for r in range(9):
                     if self.puzzle[r][c]==0:
                         options=missing-set(self.puzzle[r])
+                        rbox=int(r/3)
+                        cbox=int(c/3)
+                        for a in range(rbox * 3, rbox * 3 + 3):
+                            for b in range(cbox * 3, cbox * 3 +3):
+                                try:
+                                    options.remove(self.puzzle[a][b])
+                                except:
+                                    continue
                         #print("%d,%d" % (r,c))
                         #print(options)
                         if len(options)==1:
