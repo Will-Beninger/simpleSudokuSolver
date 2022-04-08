@@ -221,9 +221,13 @@ class SudokuUI(Frame):
     def __save_puzzle(self):
         file = filedialog.asksaveasfile(filetypes=FILES, defaultextension=FILES)
         text=''
-        for i in self.game.puzzle:
-            text=text+''.join(map(str,i))+'\n'
-        file.write(text)
+        try:
+            for i in self.game.puzzle:
+                text=text+''.join(map(str,i))+'\n'
+            file.write(text)
+        except AttributeError as err:
+            print("Save failed")
+            print(err)
 
 class SudokuBoard(object):
     """
@@ -405,8 +409,8 @@ class SudokuGame(object):
                 for c in range(9):
                     if self.puzzle[r][c]==0:
                         options=missing-set([x[c] for x in self.puzzle])
-                        print("%d,%d" % (r,c))
-                        print(options)
+                        #print("%d,%d" % (r,c))
+                        #print(options)
                         if len(options)==1:
                             self.puzzle[r][c]=options.pop()
                             changes=changes+1
@@ -418,8 +422,8 @@ class SudokuGame(object):
                 for r in range(9):
                     if self.puzzle[r][c]==0:
                         options=missing-set(self.puzzle[r])
-                        print("%d,%d" % (r,c))
-                        print(options)
+                        #print("%d,%d" % (r,c))
+                        #print(options)
                         if len(options)==1:
                             self.puzzle[r][c]=options.pop()
                             changes=changes+1
